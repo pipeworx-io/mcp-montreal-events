@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-montreal-events",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Montréal Events MCP.",
   "type": "module",
   "main": "src/index.ts",
@@ -26,7 +26,7 @@
     "@cloudflare/workers-types": "^4.20260405.1"
   },
   "pipeworx": {
-    "sourceHash": "v1-fd4c0d41f1cd350df941b05fe41da4a11780ff33285748724287d591e7c61069",
-    "sourceCommit": "adb69d997f82a62e8e22b594488c7d04a227db35"
+    "sourceHash": "v1-94ce5a58674d8df5f517854a64a47f796eaa0aa8095855920d0661d0aa8b2d12",
+    "sourceCommit": "6182c4cfebddb94950e060b5d2fca18f18ad1aca"
   }
 }
