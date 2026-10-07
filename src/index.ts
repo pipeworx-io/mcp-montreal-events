@@ -755,7 +755,18 @@ async function countQuery(clause: string): Promise<number> {
 }
 
 async function runSql(sqlText: string): Promise<unknown[]> {
-  const res = await pwFetch(`${SQL_URL}?sql=${encodeURIComponent(sqlText)}`, { headers: { Accept: 'application/json', 'User-Agent': UA } });
+  // POST with a JSON body, not GET with a query string: donnees.montreal.ca's
+  // front end now rejects a `"` character in the GET query string (the
+  // resource-id table name requires double quotes, e.g. FROM "6decf611-...")
+  // with a 409 "Valeur manquante" (missing value) — the WAF strips/mangles
+  // the sql param before CKAN ever validates it. The identical query via
+  // POST JSON works (verified live 2026-10-07). Every GET call failed loud
+  // with this HTTP 409, which is why this pack's live traffic was 192/192.
+  const res = await pwFetch(SQL_URL, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'User-Agent': UA },
+    body: JSON.stringify({ sql: sqlText }),
+  });
   const body = (await res.json().catch(() => ({}))) as { success?: boolean; result?: { records?: unknown[] }; error?: { message?: string } };
   if (!res.ok || body.success === false) throw new Error(`Montréal: ${body.error?.message || `HTTP ${res.status}`}`);
   return body.result?.records ?? [];
